@@ -144,6 +144,11 @@ class AutoMod(
     async def on_message_edit(
         self, before: discord.Message, after: discord.Message,
     ):
+        author = message.author
+        
+        if await self.bot.is_automod_immune(author):
+            return
+
         await self._listen_for_infractions(after)
 
     @Cog.listener(name="on_message_without_command")
@@ -152,8 +157,8 @@ class AutoMod(
     ):
         guild = message.guild
         author = message.author
-
-        if not message.guild:
+        
+        if not message.guild and await self.bot.is_automod_immune(author):
             return
 
         # # immune from automod actions
